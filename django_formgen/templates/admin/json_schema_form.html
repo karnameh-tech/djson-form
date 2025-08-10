@@ -1,0 +1,58 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block extrahead %}
+    {{ block.super }}
+    {{ media }}
+    <script src="{% static 'admin/js/cancel.js' %}" async></script>
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <form method="post" id="{{ opts.model_name }}_form">
+        {% csrf_token %}
+        
+        {% if errors %}
+            <p class="errornote">
+            {% if errors|length == 1 %}{% translate "Please correct the error below." %}{% else %}{% translate "Please correct the errors below." %}{% endif %}
+            </p>
+            {{ adminform.form.non_field_errors }}
+        {% endif %}
+        
+        <fieldset class="module aligned">
+            {% for field in form %}
+                <div class="form-row">
+                    {{ field.errors }}
+                    {{ field.label_tag }} {{ field }}
+                    {% if field.help_text %}
+                        <div class="help">{{ field.help_text|safe }}</div>
+                    {% endif %}
+                </div>
+                <br>
+            {% endfor %}
+        </fieldset>
+        
+        <div class="submit-row">
+            {% for button_text, button_def in original.schema.buttons.items %}
+                <input
+                {% if "type" in button_def %}
+                    type="{{ button_def.type }}"
+                {% endif %}
+                {% if "class" in button_def %}
+                    class="{{ button_def.class }}"
+                {% endif %}
+                {% if "name" in button_def %}
+                    name="{{ button_def.name }}"
+                {% endif %}
+                  {% if button_text %}
+                    value="{{ button_text }}"
+                {% endif %}
+                >
+            {% endfor %}
+            <!-- <a href="{% url opts|admin_urlname:'change' original.pk|admin_urlquote %}" class="button">{% translate "Back" %}</a> -->
+        </div>
+    </form>
+</div>
+{% endblock %}
