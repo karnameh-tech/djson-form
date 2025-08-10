@@ -1,5 +1,5 @@
 [project]
-name = "django-formgen"
+name = "djson-form"
 version = "1.0.0"
 description = "Add your description here"
 readme = "README.md"
@@ -9,4 +9,4 @@ dependencies = [
 ]
 
 [tool.setuptools]
-packages = ["django_formgen"]
+packages = ["djson_form"]

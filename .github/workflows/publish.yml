@@ -31,9 +31,7 @@ jobs:
       - name: Build package
         run: python -m build
 
-      - name: Publish to PyPI with token
+      - name: Publish to PyPI (Trusted Publishing)
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}
           skip-existing: true

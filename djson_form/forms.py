@@ -1,9 +1,9 @@
 import json
 
 from django import forms
-from django_formgen.models import JSONSchema
+from djson_form.models import JSONSchema
 
-from django_formgen.utils.fields import field_generator
+from djson_form.utils.fields import field_generator
 
 
 class PrettyJSONEncoder(json.JSONEncoder):

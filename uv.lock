@@ -26,7 +26,7 @@ wheels = [
 ]
 
 [[package]]
-name = "django-formgen"
+name = "djson-form"
 version = "1.0.0"
 source = { virtual = "." }
 dependencies = [

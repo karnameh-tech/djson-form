@@ -1,7 +1,7 @@
 import copy
 
-from django_formgen.models import JSONSchema
-from django_formgen.forms import DynamicForm
+from djson_form.models import JSONSchema
+from djson_form.forms import DynamicForm
 
 from django.shortcuts import render, redirect
 from django.apps import apps

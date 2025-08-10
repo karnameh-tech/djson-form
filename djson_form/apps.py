@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class DjangoFormgenConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'django_formgen'
+    name = 'djson_form'

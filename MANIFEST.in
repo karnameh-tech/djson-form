@@ -1,1 +1,1 @@
-recursive-include django_formgen/templates *
+recursive-include djson_form/templates *

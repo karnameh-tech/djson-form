@@ -1,7 +1,7 @@
 from django.contrib import admin
-from django_formgen.models import JSONSchema
-from django_formgen.forms import JSONSchemaForm
-from django_formgen.views import dynamic_form_view
+from djson_form.models import JSONSchema
+from djson_form.forms import JSONSchemaForm
+from djson_form.views import dynamic_form_view
 from django.urls import path
 
 
