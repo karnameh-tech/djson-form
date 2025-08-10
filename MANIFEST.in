@@ -1,1 +1,3 @@
 recursive-include djson_form/templates *
+recursive-include djson_form/utils *
+recursive-include djson_form/migrations *
