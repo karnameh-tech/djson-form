@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django_formgen.models import JSONSchema, TestModel
+from django_formgen.models import JSONSchema
 from django_formgen.forms import JSONSchemaForm
 from django_formgen.views import dynamic_form_view
 from django.urls import path
@@ -24,4 +24,3 @@ class JSONSchemaAdmin(admin.ModelAdmin):
 
 
 admin.site.register(JSONSchema, JSONSchemaAdmin)
-admin.site.register(TestModel)

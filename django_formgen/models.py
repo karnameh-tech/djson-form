@@ -22,7 +22,3 @@ class JSONSchema(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class TestModel(models.Model):
-    data = models.JSONField()
