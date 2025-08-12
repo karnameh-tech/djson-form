@@ -37,7 +37,12 @@ def dynamic_form_view(request, object_slug):
             messages.error(request, schema_obj.schema.get("submit", {}).get("error_message", "Something went wrong."))
         return redirect(replace_query_params(request, schema_obj.schema))
     else:
-        form = DynamicForm(schema=schema_obj.schema, initial=request.GET.dict())
+        params = {
+            k: v
+            for k, v in request.GET.dict().items()
+            if v not in ["off", "false", False]
+        }
+        form = DynamicForm(schema=schema_obj.schema, initial=params)
 
     context = {
         'opts': JSONSchema._meta,
