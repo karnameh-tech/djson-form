@@ -1,25 +1,23 @@
-import copy
+from urllib.parse import urlencode
 
 from djson_form.models import JSONSchema
 from djson_form.forms import DynamicForm
+from djson_form.utils.submit import SubmitProcessor
 
 from django.shortcuts import render, redirect
-from django.apps import apps
+from django.contrib import messages
 
 
-def store_form_in_model_field(
-    app_label: str,
-    model_name: str,
-    field_name: str,
-    object_id: int,
-    value: dict,
-):
-    model = apps.get_model(app_label=app_label, model_name=model_name)
-    obj = model.objects.get(id=object_id)
-    value = copy.copy(value)
-    value.pop("csrfmiddlewaretoken")
-    setattr(obj, field_name, value)
-    obj.save()
+def replace_query_params(request, schema: dict):
+    request_body = request.POST.dict()
+    query_params = request.GET.dict()
+    request_body.pop("csrfmiddlewaretoken")
+    for k, v in request_body.items():
+        query_params[k] = v
+    for k, v in schema.get("fields", {}).items():
+        if not request_body.get(k):
+            query_params.pop(k, None)
+    return f"{request.path}?{urlencode(query_params)}"
 
 
 def dynamic_form_view(request, object_slug):
@@ -28,22 +26,25 @@ def dynamic_form_view(request, object_slug):
     if request.method == 'POST':
         form = DynamicForm(request.POST, schema=schema_obj.schema)
         if form.is_valid():
-            store_form_in_model_field(
-                app_label=schema_obj.schema.get("submit", {}).get("app_label"),
-                model_name=schema_obj.schema.get("submit", {}).get("model_name"),
-                field_name=schema_obj.schema.get("submit", {}).get("field_name"),
-                object_id=request.GET.get("object_id"),
-                value=request.POST,
+            SubmitProcessor().process(
+                submit_type=schema_obj.schema.get("submit", {}).get("type"),
+                json_schema=schema_obj.schema,
+                form_data=request.POST.dict(),
+                query_params=request.GET.dict(),
             )
-            return redirect('.')
+            messages.success(request, schema_obj.schema.get("submit", {}).get("success_message", "Saved successfully."))
+        else:
+            messages.error(request, schema_obj.schema.get("submit", {}).get("error_message", "Something went wrong."))
+        return redirect(replace_query_params(request, schema_obj.schema))
     else:
-        form = DynamicForm(schema=schema_obj.schema)
+        form = DynamicForm(schema=schema_obj.schema, initial=request.GET.dict())
 
     context = {
         'opts': JSONSchema._meta,
         'form': form,
         'original': schema_obj,
         'title': f'{schema_obj.schema.get("title", schema_obj.name)}',
+        "query_params": request.GET.dict(),
     }
 
     return render(request, 'admin/json_schema_form.html', context)

@@ -1,3 +1,5 @@
 from django.db import models
 
-# Create your models here.
+
+class TestModel(models.Model):
+    store_json = models.JSONField(null=True, blank=True)
