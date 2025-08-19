@@ -43,6 +43,7 @@ def dynamic_form_view(request, object_slug):
                     'title': f'{schema_obj.schema.get("title", schema_obj.name)}',
                     "query_params": request.GET.dict(),
                 }
+                messages.error(request, schema_obj.schema.get("submit", {}).get("error_message", form.errors.as_text()))
                 return render(request, 'admin/json_schema_form.html', context)
         else:
             messages.error(request, schema_obj.schema.get("submit", {}).get("error_message", form.errors.as_text()))
