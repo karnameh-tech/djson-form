@@ -31,10 +31,21 @@ def dynamic_form_view(request, object_slug):
                 json_schema=schema_obj.schema,
                 form_data=request.POST.dict(),
                 query_params=request.GET.dict(),
+                form=form,
             )
-            messages.success(request, schema_obj.schema.get("submit", {}).get("success_message", "Saved successfully."))
+            if form.is_valid():
+                messages.success(request, schema_obj.schema.get("submit", {}).get("success_message", "Saved successfully."))
+            else:
+                context = {
+                    'opts': JSONSchema._meta,
+                    'form': form,
+                    'original': schema_obj,
+                    'title': f'{schema_obj.schema.get("title", schema_obj.name)}',
+                    "query_params": request.GET.dict(),
+                }
+                return render(request, 'admin/json_schema_form.html', context)
         else:
-            messages.error(request, schema_obj.schema.get("submit", {}).get("error_message", "Something went wrong."))
+            messages.error(request, schema_obj.schema.get("submit", {}).get("error_message", form.errors.as_text()))
         return redirect(replace_query_params(request, schema_obj.schema))
     else:
         params = {
